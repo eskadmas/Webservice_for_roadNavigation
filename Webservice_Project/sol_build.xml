@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="init" name="RNS-SOL3">
+	
+	<description>
+		Script for RNS Assignment 3 solution
+	</description>
+	
+	<!-- The location of this assignment -->
+	<property name="basedir" location="." />
+	<property name="gen.dir" location="${basedir}/gen-src" />
+	<property name="schema.dir" location="${basedir}/xsd" />
+	<property name="schema.dir.custom" location="${basedir}/custom" />
+	<property name="src.dir" location="${basedir}/src" />
+	<property name="build.dir" location="${basedir}/build" />
+	<property name="lib.dir" location="${basedir}/lib" />
+	<property name="lib.src.dir" location="${basedir}/lib-src" />
+	<property name="ext.lib.dir" location="/opt/dp2/shared/lib" />
+	
+	<!-- Java compiler settings -->
+	<property name="debug" value="true" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.8" />
+	<property name="source" value="1.8" />
+	
+	<!-- The classpath to be used for compilation of the service -->
+    <path id="service.classpath">
+		<fileset dir="${lib.dir}">
+		    <include name="*.jar" />
+			<exclude name="ant-*.jar"/>
+		</fileset>
+    	
+    	<fileset dir="${lib.src.dir}">
+    		<include name="*.jar" />
+    		<exclude name="ant-*.jar"/>
+    	</fileset>
+    	
+    	<fileset dir="${ext.lib.dir}">
+    		<include name="*.jar" />
+    		<exclude name="ant-*.jar"/>
+    	</fileset>
+	</path>
+	
+	<!-- The classpath for building clients -->
+	<path id="client.classpath">
+		<pathelement location="${lib.dir}/RNS.jar"/>
+		<pathelement location="${lib.dir}/lab3.jar"/>
+		<fileset dir="${ext.lib.dir}">
+			<include name="*.jar" />
+			<exclude name="ant-*.jar"/>
+		</fileset>
+	</path>
+		
+	<!-- The init target	-->
+	<target name="init">
+		<mkdir dir="${gen.dir}" />
+	</target>	
+	
+	<target name="-chk-bindings">
+		<uptodate property="generate-bindings.notRequired" targetfile="${gen.dir}/.flagfile">
+			<srcfiles dir="${schema.dir}" includes="**/*.xsd" />
+		</uptodate>
+	</target>
+	
+	<!-- The target for generating sol2 artifacts -->
+	<target name="generate-sol2artifacts" unless="generate-bindings.notRequired" description="Generate bindings from schema">
+			<exec executable="xjc" failonerror="true" >
+				<arg value="-d" />
+				<arg value="${gen.dir}" />
+				<arg value="-p" />
+				<arg value="it.polito.dp2.RNS.sol2.jaxb" />
+				<arg value="${schema.dir.custom}/PathSchema.xsd" />
+			</exec>
+			<touch file="${gen.dir}/.flagfile" />	
+		</target>
+	
+	<!-- The target for generating sol3 artifacts -->
+	<target name="generate-sol3artifacts" unless="generate-bindings.notRequired" description="Generate bindings from schema">
+		<exec executable="xjc" failonerror="true" >
+			<arg value="-d" />
+			<arg value="${gen.dir}" />
+			<arg value="-p" />
+			<arg value="it.polito.dp2.RNS.sol3.jaxb" />
+			<arg value="${schema.dir}/RnsSystem.xsd" />
+		</exec>
+		<touch file="${gen.dir}/.flagfile" />	
+	</target>
+	
+	<!-- The target for buildService -->
+	<target name="build-service" depends="init, generate-sol2artifacts, generate-sol3artifacts" description="it builds the service">
+		<echo>Building the service...</echo>
+		<javac 
+			destdir="${build.dir}"
+			debug="${debug}"
+			debuglevel="${debuglevel}"
+			source="${source}"
+			target="${target}"
+			includeantruntime="false">
+				<src path="${src.dir}"/>
+				<src path="${gen.dir}"/>
+				<include name="it/polito/dp2/RNS/sol3/service/**" />
+				<classpath>
+					<path refid="service.classpath" />
+				</classpath>
+		</javac>
+		<echo>Done.</echo>
+	</target>
+	
+	<!-- The target for buildClient -->
+	<target name="build-client" depends="init" description="it builds the clients">
+		<echo>Building the clients...</echo>
+		<javac 
+			destdir="${build.dir}" 
+			debug="${debug}"
+			debuglevel="${debuglevel}"
+			source="${source}"
+			target="${target}"
+			includeantruntime="false">
+				<src path="${src.dir}"/>
+				<src path="${gen.dir}"/>
+				<include name="it/polito/dp2/RNS/sol3/admClient/**" />
+				<include name="it/polito/dp2/RNS/sol3/vehClient/**" />
+				<classpath>
+					<path refid="client.classpath" />
+				</classpath>
+		</javac>
+		<echo>Done.</echo>
+	</target>
+	
+	<!-- The target for clean -->
+	<target name="clean" description="it cleans the specified files/directories">
+		<delete dir="${gen.dir}" />
+		<delete file="${basedir}/lab3.zip"/>
+		<delete file="${basedir}/testout.xml"/>
+	</target>
+				
+</project>

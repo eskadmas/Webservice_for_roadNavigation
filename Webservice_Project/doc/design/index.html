@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>IdentifiedEntity web service</title>
+</head>
+<body>
+<h2>IdentifiedEntity RESTful Web Service</h2>
+<p>
+The IdentifiedEntity web service is a web service showing all the different HTTP methods in action. 
+The aim of the service is to allow pathFinder, vehicle, and administration clients to load, read, unload and modify place and vehicle objects. 
+An IdentifiedEntity object is a root resource that includes place and vehicle sub-resources. 
+In places, there are tracked vehicles. While in vehicles, there are paths that the vehicle goes through.
+</p>
+
+<p>
+The main resource of the service is the collection of resources, which represents the (initially empty) collection of IdentifiedEntity
+objects. By POST-ing to this resource, it is possible to create new IdentifiedEntity objects as sub-resources. 
+The ids of these resources are decided by the service. 
+Resources representing single IdentifiedEntity objects can be read, updated and deleted by means of get, put and delete methods.
+</p>
+
+</body>
+</html>

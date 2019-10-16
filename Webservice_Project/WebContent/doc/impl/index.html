@@ -1,0 +1,30 @@
+<html>
+<body>
+	<h2>The Major Implementations in Assignment 3</h2>
+		<ul>
+			<li> Implementing an Administration Client, which can provide read, write, update, and delete accesses about vehicles and read access about places and connections. 
+			This client takes the form of a library and loads information about places and connections at start up. 
+			It implements it.polito.dp2.RNS.lab3.AdmClient interface. 
+			A factory class named it.polito.dp2.RNS.sol3.admClient.AdminClientFactory, has also included. 
+			This client enables to read information about the suggested path for each tracked vehicle in RNS. 
+			Any tracked vehicle is found in a given place in the RNS.
+			An administrator can remove a vehicle from the set of vehicles. 
+			</li>
+			
+			<li> Implementing a Vehicle Client that takes the form of a library that implements it.polito.dp2.RNS.lab3.vehClient interface. 
+			This library includes a factory class named it.polito.dp2.RNS.sol3.vehClient.VehClientFactory. 
+			This Client enables to manage a vehicle when it enters into a system(through IN or INOUT Gate), moves in places of RNS, exits from a system(through OUT or INOUT Gate), and changes it's state. 
+			</li>
+			
+			<p> On the server side, the implementation includes the following: </p>
+			
+			<li> RnsResources - The possible operations on resources are declared here.
+			Client requests are first goes to RnsResources. When it receives Client requests, it may perform one of the two things. 
+			One, it may respond to clients requests if it is able to do so. Second, it may passes Client requests for RnsService. 
+			</li>
+			<li> RnsService - it may respond for the client requests which come from RnsResources or pass the requests to RnsData. </li>
+			<li> RnsData - The data related to places, connections, and vehicles are created, updated, and deleted here. 
+			It responds for the Client requests which come from RnsService. </li>
+		</ul>
+	</body>
+</html>
